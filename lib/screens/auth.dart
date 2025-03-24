@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_firebase_chat/widgets/user_image_picker.dart';
 
 final _firebase = FirebaseAuth.instance;
 
@@ -27,24 +28,26 @@ class _AuthScreenState extends State<AuthScreen> {
 
     try {
       if (_isLogin) {
-        final userCredentials = await _firebase.signInWithEmailAndPassword(
+        await _firebase.signInWithEmailAndPassword(
           email: _enteredEmail,
           password: _enteredPassword,
         );
       } else {
-        final userCredentials = await _firebase.createUserWithEmailAndPassword(
+        await _firebase.createUserWithEmailAndPassword(
           email: _enteredEmail,
           password: _enteredPassword,
         );
       }
     } on FirebaseAuthException catch (error) {
-      if (error == 'email-already-in-use') {
-        // ...
+      // if (error == 'email-already-in-use') {
+      //   // ...
+      // }
+      if(mounted){
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error.message ?? 'Authentication failed.')),
+        );
       }
-      ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error.message ?? 'Authentication failed.')),
-      );
     }
   }
 
@@ -77,6 +80,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          if(!_isLogin) UserImagePicker(),
                           TextFormField(
                             decoration: const InputDecoration(
                               labelText: 'Email Address',
