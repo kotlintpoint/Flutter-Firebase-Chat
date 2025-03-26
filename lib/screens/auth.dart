@@ -72,7 +72,7 @@ class _AuthScreenState extends State<AuthScreen> {
       //   // ...
       // }
       setState(() {
-        _isAuthenticating = true;
+        _isAuthenticating = false;
       });
       if (mounted) {
         ScaffoldMessenger.of(context).clearSnackBars();
